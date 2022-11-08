@@ -1,0 +1,182 @@
+
+/*  */
+
+:root {
+  --green: #4a4d2e;
+  --gray: #1c262e;
+  --red: #482e4d;
+  --blue: #466174;
+
+  --white: #f7f7f7;
+  --white-2: #81818d;
+
+  --border-radius-input: 40px;
+  --header-side-margin: 23rem;
+}
+
+/*  */
+
+* {
+  transition-timing-function: ease-in-out;
+}
+
+.vw35 {
+  width: 35vw;
+}
+
+.vw50 {
+  width: 50vw;
+}
+
+.vw100 {
+  width: 100vw;
+}
+
+/*  */
+
+.vh35 {
+  height: 35vh;
+}
+
+.vh50 {
+  height: 50vh;
+}
+
+.vh75 {
+  height: 75vh;
+}
+
+.vh100 {
+  height: 100vh;
+}
+
+/*  */
+
+.vh35.min-height {
+  min-height: 35vh;
+}
+
+.vh50.min-height {
+  min-height: 50vh;
+}
+
+.vh75.min-height {
+  min-height: 75vh;
+}
+
+.vh100.min-height {
+  min-height: 100vh;
+}
+
+/*  */
+
+.flex {
+  display: flex;
+}
+
+.grid {
+  display: grid;
+}
+
+
+.flex-center {
+  justify-content: center;
+  align-items: center;
+}
+
+.grid-center {
+  place-items: center;
+}
+
+
+.flex-center-x {
+  justify-content: center;
+}
+
+.flex-center-y {
+  align-items: center;
+}
+
+
+.pos-rel, .position-relative {
+  position: relative;
+}
+
+.pos-abs, .position-absolute {
+  position: absolute;
+}
+
+
+
+
+/*  */
+
+.hero-side {
+  height: 100%;
+  width: 50%;
+}
+
+/*  */
+
+section {
+  width: 100vw;
+}
+
+.container {
+  width: 1040px;
+  margin: auto;
+}
+
+.container.cards {
+  display: flex;
+}
+
+.cards {
+  display: flex;
+  justify-content: space-around;
+}
+
+input[type=button] {
+  border: none;
+  cursor: pointer;
+}
+
+input[type=email], input[type=text] {
+  outline: none;
+}
+
+
+h1, h2, h3, input, p, textarea, li, a, div {
+  font-family: 'Poppins', sans-serif;
+  outline: none;
+  border: none;
+  resize: none;
+}
+
+label {
+  font-weight: bold;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  background-color: rgb(0,0,0,0);
+}
+
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+  font-weight: bold;
+}
+
+.card {
+  box-shadow: 0px 8px 10px 1px rgb(0 0 0 / 0.4);
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+}

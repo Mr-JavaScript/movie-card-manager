@@ -1,0 +1,35 @@
+[
+  {
+    "_id": "0",
+    "movie":"Alien",
+    "quote":"Come get some bitch!",
+    "character":"Ripley",
+    "ability":"Allows you to come and get some.... bitch.",
+    "ability-name":"Ripley Slap",
+    "times-selected":1,
+    "type": "attack",
+    "poster":"./imgs/alien_poster.jpg"
+  },
+  {
+    "_id": "1",
+    "movie":"Avengers: Endgame",
+    "quote":"No, I don't think I will.",
+    "character":"Steve Rodgers",
+    "ability":"Allows you to not think you will.",
+    "ability-name":"Rodger's Reject",
+    "times-selected":3,
+    "type": "defense",
+    "poster":"https://m.media-amazon.com/images/I/51yUkVmPOrL._AC_.jpg"
+  },
+  {
+    "_id": "2",
+    "movie": "Spider-Man",
+    "quote": "With great power comes great responsibility.",
+    "character": "Uncle Ben",
+    "ability": " Allows great power to come.. with responsibility.",
+    "ability-name":"Ben's Wisdom",
+    "times-selected":0,
+    "type": "support",
+    "poster": "https://i.ebayimg.com/images/g/-ywAAOSwdrtguY51/s-l400.jpg"
+  }
+]
