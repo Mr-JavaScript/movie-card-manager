@@ -27,8 +27,11 @@ class CardDisplayer extends HtmlComponent {
 
     let view = this.attr ("view")
 
-    if (view == "selected" || !view) view = "all-cards"
-    else view = "selected"
+    if (view == "selected" || !view) 
+      view = "all-cards", this.list.scrollLeft = this.fromState ("list-scrollLeft") || 0;
+      
+    else 
+      view = "selected", this.updateState ("list-scrollLeft", this.list.scrollLeft)
 
     this.list.className = view
     this.attr ("view", view)
@@ -53,6 +56,8 @@ class CardDisplayer extends HtmlComponent {
     if (cards.length <= 4) this.list.style.width = `${cards.length * 17.4}%`
     else width = "90%"
     this.list.style.width = width
+
+    if (this.attr ("view") == "all-cards") this.list.scrollLeft = this.fromState ("list-scrollLeft")
    
   }
   signals () {
@@ -62,6 +67,7 @@ class CardDisplayer extends HtmlComponent {
     })
 
     this.onSignal ("new-cards", cards=> {
+
       this.toggleListView ()
 
       if (!this.just_created) this.removeAllCards (()=> {
@@ -69,8 +75,8 @@ class CardDisplayer extends HtmlComponent {
         setTimeout (()=> this.addCards (cards), 600)
   
       })
-
       else this.addCards (cards)
+
     })
 
     this.onSignal ("current-view", ()=> this.attr ('view'))
@@ -93,8 +99,6 @@ class CardDisplayer extends HtmlComponent {
   removeAllCards (cb) {
     let count = 0, index = 0, cards = Array.from (this.cardElements ())
 
-    // console.log(cards);
-
     let last_card = cards.slice (-1) [0]
 
     last_card.addEventListener ("animationstart", e=> {
@@ -106,11 +110,6 @@ class CardDisplayer extends HtmlComponent {
     last_card.addEventListener ("animationend", e=> {
 
       console.log ({ message: "animtion ended" })
-      
-      // cards.forEach (card_elem=> {
-      //   card_elem.selected ()
-      // })
-      // this.has_cards = false
 
     })
 
@@ -131,83 +130,84 @@ class CardDisplayer extends HtmlComponent {
       // this.style.animation = "change-view 2s ease-out forwards"
     })
   }
-  render () {    
+  render () {   
+    
+    let style = /*css*/`
+    :host {
+      position: absolute;
+      width: 100%; height: 100%;
+      overflow: hidden;
+    }
+    @keyframes change-view {
+      0% {
+        width: inherit; height: inherit;
+      }
+      50% {
+        opacity: 0; width: inherit; height: inherit;
+      }
+      100% {
+        opacity: 1;
+        height: 70%; min-width: 548px;
+        top: 50%; left: 50%; border-radius: 15px;
+        box-shadow: 0px 4px 5px 1px rgb(0 0 0 / .5);
+        transform: translate(-50%, -50%);
+        background: var(--card-tint);
+      }
+    }
+    ul {
+      position: absolute;
+      left: 50%; top: 43%;
+      transform: translate(-50%, -50%);
+
+
+      display: flex; overflow-x: scroll;
+      gap: 7rem;
+      justify-content: space-between;
+      align-items: center; margin: 0px; padding: 0rem 9rem;
+      transition: width .5s ease-out, opacity .4s ease-out, height .4s ease-out, border-radius .4s ease-in, background 3s ease-in;
+    }
+    ul.all-cards {
+      width: 90%; height: 55rem;
+    }
+    ul.selected {
+      overflow-x: hidden;
+      position: absolute;
+      border-radius: 15px;
+      padding: 5rem 9rem; background: var(--card-tint);     
+    } 
+    @keyframes selected-list-view {
+      to {
+        
+      }
+    }
+    ul::-webkit-scrollbar {
+      width: .5em;
+      height: 0px;
+      scale: .5;
+      background-color: rgb(0 0 0 / 0);
+    }
+    
+    ul::-webkit-scrollbar-track {
+      box-shadow: 0 0 6px 1px rgb(15 15 15 / .5);
+      opacity: .7;
+    }
+    
+    ul::-webkit-scrollbar-thumb {
+      background-color: var(--gray-1);
+      outline: none;  border-radius: 15px;
+      opacity: .7;
+      height: 5px;
+    }`
 
     this.shadowRoot.innerHTML = /* html */`
       <style>
-        :host {
-          background: var(--card-displayer-background);
-          position: absolute;
-          width: 100%; height: 100%;
-          overflow: hidden;
-        }
-        @keyframes change-view {
-          0% {
-            width: inherit; height: inherit;
-          }
-          50% {
-            opacity: 0; width: inherit; height: inherit;
-          }
-          100% {
-            opacity: 1;
-            height: 70%; min-width: 548px;
-            top: 50%; left: 50%; border-radius: 15px;
-            box-shadow: 0px 4px 5px 1px rgb(0 0 0 / .5);
-            transform: translate(-50%, -50%);
-            background: var(--card-tint);
-          }
-        }
-        ul {
-          position: absolute;
-          left: 50%; top: 43%;
-          transform: translate(-50%, -50%);
-
-
-          display: flex; overflow-x: scroll;
-          gap: 7rem;
-          justify-content: space-between;
-          align-items: center; margin: 0px; padding: 0rem 9rem;
-          transition: width .5s ease-out, opacity .4s ease-out, height .4s ease-out, border-radius .4s ease-in, background 3s ease-in;
-        }
-        ul.all-cards {
-          width: 90%; height: 55rem;
-        }
-        ul.selected {
-          overflow-x: hidden;
-          position: absolute;
-          border-radius: 15px;
-          padding: 5rem 9rem; background: var(--card-tint);     
-        } 
-        @keyframes selected-list-view {
-          to {
-            
-          }
-        }
-        ul::-webkit-scrollbar {
-          width: .5em;
-          height: 0px;
-          scale: .5;
-          background-color: rgb(0 0 0 / 0);
-        }
-        
-        ul::-webkit-scrollbar-track {
-          box-shadow: 0 0 6px 1px rgb(15 15 15 / .5);
-          opacity: .7;
-        }
-        
-        ul::-webkit-scrollbar-thumb {
-          background-color: var(--gray-1);
-          outline: none;  border-radius: 15px;
-          opacity: .7;
-          height: 5px;
-        }
+        ${style}
       </style>
       <ul></ul>
     `
 
-    let ul = this.query ("ul")
     this.addEventListener("wheel", function (e) {
-      ul.scrollLeft += e.deltaY;
+      this.list.scrollLeft += e.deltaY;
     });
   }
 }

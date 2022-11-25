@@ -7,6 +7,7 @@ class HtmlComponent extends HTMLElement {
     super ()
     this.name = name || this.tagName.toLocaleLowerCase ()
     this._events = {}
+    this._state = {}
     this.attachShadow ({ mode })
   }
   onload () {}
@@ -36,5 +37,36 @@ class HtmlComponent extends HTMLElement {
   query (selector, all) {
     if (all) return this.shadowRoot.querySelectorAll (selector)
     return this.shadowRoot.querySelector (selector)
+  }
+  hasClass (selector, elem = this) {
+    return elem.classList.contains (selector)
+  }
+  queryAll (selector) {
+    return this.query (selector, true)
+  }
+  toggleClass (selector, elem = this) {
+    elem.classList.toggle (selector)
+  }
+  removeClass (selector, elem = this) {
+    elem.classList.remove (selector)
+  }
+  addClass (selector, elem = this) {
+    elem.classList.add (selector)
+  }
+  copyToState (obj) {
+    for (let key in obj) this._state [key] = obj [key]
+    this.stateUpdated ()
+  }
+  updateState (prop, value) {
+    this._state [prop] = value
+  }
+  fromState (prop) {
+    return this._state [prop]
+  }
+  stateUpdated () {
+    this.updateState ("_updated", true)
+  }
+  renderUpdated () {
+    this.updateState ("_updated", false)
   }
 }

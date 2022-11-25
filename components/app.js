@@ -64,12 +64,29 @@ class MyApp extends HtmlComponent {
   render () {
     this.shadowRoot.innerHTML = /* html */`
       <style>
+      @import "../css/hero.css";
         :host {
           position: absolute;
           width: 100%; height: 100%;
+          background: linear-gradient(-45deg, var(--gray-3), var(--gray-2), var(--gray-1), var(--gray-2), var(--gray-3));
+          background-size: 400% 400%;
+          animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
         }
       </style> 
-      <nav-bar selected="categories"></nav-bar>
+
+      <nav-bar selected="genres"></nav-bar>
       <card-displayer></card-displayer>
       <app-variables pick-amount="3"></app-variables>
     `
@@ -87,4 +104,4 @@ class MyApp extends HtmlComponent {
   }
 }
 
-customElements.define('my-app', MyApp)
+customElements.define ('my-app', MyApp)

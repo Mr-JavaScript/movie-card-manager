@@ -54,7 +54,11 @@ class CardElement extends HtmlComponent {
     return /* css */`
     .card-element:hover {
       transform: scale(1.1);
-      box-shadow: 0 3px 10px 1px rgb(0 0 0);
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      animation: move-bg-gradient .4s 200ms ease-in infinite alternate;
+    }
+    .card-element:hover .poster {
+      margin: auto; width: 98%; height: 98%;
     }
     .card-element:hover .emblem{
       <!-- opacity: .7; -->
@@ -82,7 +86,7 @@ class CardElement extends HtmlComponent {
     }
     .card-element:hover .quote {
       height: 0px;
-      opacity: 0;
+      opacity: 0; display: none;
     }
     .card-element:hover .character {
       opacity: 0;
@@ -97,15 +101,20 @@ class CardElement extends HtmlComponent {
       transform: translate(1rem, 1px);
       border-top-left-radius: 15px;
       border-top-right-radius: 15px;
-      <!-- bottom: .5rem; -->
     }
     .card-element:hover .ability-name p {
       opacity: .5;
     }
     .card-element:hover .ability {
-      opacity: 1;
-      padding: 1rem 1rem;
+      opacity: 1; width: 110%;
+      padding: 1rem 1rem; display: block;
       background-color: rgb(15 15 15);
+    }
+    .card-element:hover .flash-container {
+      opacity: 1;
+    }
+    .card-element:hover .flash-container::before {
+      top: 100%; opacity: 1;
     }`
   }
   render () {
@@ -114,20 +123,44 @@ class CardElement extends HtmlComponent {
 
     this.shadowRoot.innerHTML = /* html */`
       <style>
+        @import "../css/hero.css";
+        @keyframes move-bg-gradient {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+        @keyframes card-bg-pulse {
+          0% { 
+            box-shadow: 0px 4.5px 5px 1.5px var(--gray-0);
+            background: radial-gradient(#480032, #005792, #FC92E3, #F2F4C3); }
+          25% { background: radial-gradient(#F2F4C3, #480032, #005792, #FC92E3, ); }
+          50% { background: radial-gradient(#FC92E3, #F2F4C3, #480032, #005792 ); }
+          100% { 
+            box-shadow: 0px 4.5px 5px 7.5px var(--gray-0);
+            background: radial-gradient(#005792, #FC92E3, #F2F4C3, #480032 ); }
+        }
         :host {
-          min-width: 260px; height: fit-content;
-          max-width: 260px; height: fit-content;
+          min-width: 260px; height: 540px;
+          max-width: 260px;
           transition: transform .4s ease-in, opacity .4s ease-out;
         }
         :host(.hide-card) {
           opacity: 0; transform: translateX(-400px) scale(.6); 
         }
-        .card-element {         
-          min-height: 540px;
-          width: 100%; height: 100%;
+        .card-element {
+          width: 100%; 
+          height: 100%;
           position: relative; 
           transform: scale(1);
-          transition: transform .2s ease-in, box-shadow .2s ease-out, opacity .2s ease-out;
+          background-color: var(--gray-0);
+          background-size: 520px 1080px;
+          transition: transform .2s ease-in, box-shadow .2s ease-out, opacity .2s ease-out, background .2s ease-out;
           box-shadow: 0px 4.5px 5px .5px var(--gray-0);
           border: 4px solid var(--gray-0);
           border-style: groove solid;
@@ -140,6 +173,8 @@ class CardElement extends HtmlComponent {
           background-repeat: no-repeat;
           background-size: cover;
           background-position-x: 50%;
+          left: 50%; top: 50%; transform: translate(-50%,-50%);
+          transition: width .2s ease-in, height .2s ease-in;
           z-index: -1;
         }
         .times-selected {
@@ -169,13 +204,13 @@ class CardElement extends HtmlComponent {
         }
         .quote {
           font-size: 1.5em;
-          padding: 1rem;
+          padding: 1rem; width: 110%;
           background-color: var(--gray-0);
           transition: opacity .2s ease-out, height .3s ease-in;
         }
         .ability {
           font-size: 1.25em;
-          opacity: 0;
+          opacity: 0; width: 0%; display: none;
           transition: opacity .2s ease-out;
         }
         .ability-name {
@@ -225,19 +260,17 @@ class CardElement extends HtmlComponent {
           transition: transform .3s ease-out;
         }
         .content {
-          width: 100%; height: 100%; padding-top: 19rem; transition: padding-top .2s ease-out;
+          width: 100%; padding-top: 19rem; transition: padding-top .2s ease-out;
           z-index: 2;
         }
         .content > * {
           z-index: 4;
         }
         .text-shape {
-          width: 110%;
           transform: translateX(-1.8rem);
           border-top-right-radius: 15px;
           border-bottom-left-radius: 15px;
           box-shadow: 0px 5px 5px 1px var(--gray-0);
-          <!-- transform: translateX(-10px); -->
         }
         .border {
           border-top-right-radius: 15px;
@@ -246,7 +279,7 @@ class CardElement extends HtmlComponent {
         .emblem {
           position: absolute;
           right: -1.25rem;
-          top: 1.05rem;
+          top: 1.05rem; 
           z-index: 2;
           width: 2.5rem;
           height: 2.5rem;
@@ -261,21 +294,6 @@ class CardElement extends HtmlComponent {
           height: 100%;
           position: absolute;
           overflow: hidden;
-        }
-        .flash-container {
-          position: absolute; overflow: hidden;
-          width: 100%; height: 100%; z-index: 0; border-radius: 0px 15px 0px 15px;
-        }
-        .flash-container::before {
-          content: "";
-          position: absolute;
-          top: -100%; left: 0px;
-          width: 100%; height: 100%;
-          background: linear-gradient(135deg, transparent 25%, rgb(255 255 255 / .5), transparent 75%);
-          transition: left .2s ease-in, top .3s ease-out;
-        }
-        .card-element:hover .flash-container::before {
-          top: 100%;
         }
 
         .ontop {
@@ -297,12 +315,12 @@ class CardElement extends HtmlComponent {
         <div class="flash-container"></div>
 
         <div class="content">
-          <div class="on-top times-selected"><p>${attr ("times-selected")}</p></div>
+          <div class="times-selected"><p>${attr ("times-selected")}</p></div>
           
-          <div class="on-top quote text-shape"><q>${attr ("quote")}</q></div>
-          <div class="on-top character"><p>${attr ("character")}</p></div>
-          <div class="on-top ability-name"><p>${attr ("ability-name")}</p></div>
-          <div class="on-top ability text-shape"><p>${attr ("ability")}</p></div>
+          <div class="quote text-shape"><q>${attr ("quote")}</q></div>
+          <div class="character"><p>${attr ("character")}</p></div>
+          <div class="ability-name"><p>${attr ("ability-name")}</p></div>
+          <div class="ability text-shape"><p>${attr ("ability")}</p></div>
         </div>
 
         <div class="ability-type"><p>${attr ("type")}</p></div>
@@ -310,18 +328,6 @@ class CardElement extends HtmlComponent {
 
       </div>
     `
-    let content = `<div class="content">
-      <div class="on-top times-selected"><p>${attr ("times-selected")}</p></div>
-      
-      <div class="on-top quote text-shape"><q>${attr ("quote")}</q></div>
-      <div class="on-top character"><p>${attr ("character")}</p></div>
-      <div class="on-top ability-name"><p>${attr ("ability-name")}</p></div>
-      <div class="on-top ability text-shape"><p>${attr ("ability")}</p></div>
-    </div>`
-
-    let move_title_section = `<div class="movie-title">
-      <h1>${attr ("movie")}</h1>
-    </div>`
   }
 
 }

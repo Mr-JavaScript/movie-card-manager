@@ -29,8 +29,8 @@ class AppVariables extends HtmlComponent {
   }
   pickCards () {
 
-    let data = this.view == "normal"? this.attr ("pick-amount") : "*"
-    this.sendSignal ("pick-cards", data)
+    let amount = this.view == "normal"? this.attr ("pick-amount") : "*"
+    this.sendSignal ("pick-cards", amount)
     
   }
   pickAmount () {
