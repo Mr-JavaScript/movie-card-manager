@@ -150,7 +150,7 @@ class CardElement extends HtmlComponent {
   borderCss () {
     return /*css*/`
     :host(:hover), :host(.selected){
-      transform: scale(1.1) skew(-4deg, -0deg);
+      transform: scale(1.1) skew(-4deg, -4deg);
       box-shadow: none;
     }
     :host(.selected)::before {
@@ -235,13 +235,13 @@ class CardElement extends HtmlComponent {
 
     let style = /*css*/`
     :host {
-      min-width: 260px; height: 540px; transform: scale(1) skew(-4deg);
+      min-width: 260px; height: 540px; transform: scale(1) skew(-4deg, -2deg);
       max-width: 260px; position: relative;
       transition: transform .1s ease-in, opacity .4s ease-out;
     }
     :host(.hide-card) {
       transition: transform .4s ease-in, opacity .4s ease-out;
-      opacity: 0; transform: translateX(-400px) scale(.6) skew(-4deg);
+      opacity: 0; transform: translateX(-400px) scale(.6) skew(-4deg, -2deg);
     }
     .card-element {
       height: 99%;

@@ -226,7 +226,7 @@ class CardDisplayer extends HtmlComponent {
       width: 100%; height: 700px;
     }
     ul.selected {
-      transform: translate(-50%, -50%) skew(-4deg, 0deg);
+      transform: translate(-50%, -50%) skew(-4deg, -4deg);
       overflow-x: hidden;
       position: absolute;
       border-radius: 15px;
