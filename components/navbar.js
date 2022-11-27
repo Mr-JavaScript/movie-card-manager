@@ -510,12 +510,15 @@ class NavBar extends HtmlComponent {
     form.onmouseenter = ()=> {
       form.enterTime = Date.now ()
       form.classList.remove ("hidden")
+      this.sendSignal ("add-blur-to-card-displayer")
     }
     form.onmouseleave = ()=> {
 
       setTimeout (()=> {
-        if (Date.now () - form.enterTime >= 3000) form.classList.add ("hidden")
-      }, 3000)
+        if (Date.now () - form.enterTime >= 1000) 
+          this.sendSignal ("remove-blur-from-card-displayer"),  
+          form.classList.add ("hidden")
+      }, 1500)
     }
   }
 }

@@ -5,7 +5,7 @@ class CardDisplayer extends HtmlComponent {
     this.just_created = true
     this.card_data = undefined
     this.card_html = undefined
-    this.operations_order = ["toggleListView", "getCardData", "addCards"]
+    this.update_viewed_delay = 50
   }
   get list () {
     return this.query ("ul")
@@ -53,12 +53,13 @@ class CardDisplayer extends HtmlComponent {
     this.just_created = false;
     
     this.list.innerHTML = this.card_html
-    if (cards.length <= 4) this.list.style.width = `${cards.length * 17.4}%`
+    if (cards.length <= 4) width = `${cards.length * 17.4}%`
     else width = "90%"
     this.list.style.width = width
 
     if (this.attr ("view") == "all-cards") this.list.scrollLeft = this.fromState ("list-scrollLeft")
-   
+    
+    setTimeout (()=> this.updateViewedCard (true), 250)
   }
   signals () {
 
@@ -68,14 +69,20 @@ class CardDisplayer extends HtmlComponent {
 
     this.onSignal ("new-cards", cards=> {
 
-      this.toggleListView ()
-
       if (!this.just_created) this.removeAllCards (()=> {
 
-        setTimeout (()=> this.addCards (cards), 600)
+        
+        setTimeout (()=> {
+
+          this.toggleListView ()
+          this.addCards (cards)
+        
+        }, 600)
   
       })
-      else this.addCards (cards)
+      else 
+        this.toggleListView (),
+        this.addCards (cards)
 
     })
 
@@ -83,9 +90,20 @@ class CardDisplayer extends HtmlComponent {
 
     this.onSignal ("view-change", ()=> {})
 
+    this.onSignal ("get-viewed-card", ()=> {
+      return this.viewed_card
+    })
+
+    this.onSignal ("add-foreground-blur", ()=> {
+      this.list.style.filter = "blur(4px)"
+    })
+    this.onSignal ("remove-foreground-blur", ()=> {
+      this.list.style.filter = "blur(0px)"
+    })
+
   }
   cardHTML (card){;
-    return `<card-element ${attributeString (card, ["*"])}></card-element>`
+    return `<card-element ${attributeString (card, ["*"])} view=${this.attr ("view")}></card-element>`
   }
   displaySelected (cards) {
     console.log(cards);
@@ -97,7 +115,10 @@ class CardDisplayer extends HtmlComponent {
     return this.query ("card-element", true)
   }
   removeAllCards (cb) {
-    let count = 0, index = 0, cards = Array.from (this.cardElements ())
+    let 
+      count = 0, 
+      index = 0, 
+      cards = Array.from (this.cardElements ())
 
     let last_card = cards.slice (-1) [0]
 
@@ -113,11 +134,11 @@ class CardDisplayer extends HtmlComponent {
 
     })
 
-    let delay = 100
-    let delay_sum = (delay * cards.length)
-    cb (delay_sum)
+    let
+      delay = 100,
+      delay_sum = (delay * cards.length)
 
-    let args = ["hide-card", "change-view 1.3s ease-out forwards"]
+    
 
     let stagger = (_cb = ()=> {})=> {
       if (index == cards.length) return _cb ()
@@ -127,8 +148,37 @@ class CardDisplayer extends HtmlComponent {
     }
 
     stagger (()=> {
-      // this.style.animation = "change-view 2s ease-out forwards"
+
+      cb (delay_sum)
+
     })
+  }
+  updateViewedCard (pass) {
+    if (Date.now () - this.wheel_scrolled_time < this.update_viewed_delay && !pass) return
+    let cards = this.cardElements ()
+    for (let card of cards) {
+      let card_rect = card.getBoundingClientRect ()
+      let list_rect = this.list.getBoundingClientRect ()
+      
+      let screen_center = {
+        x: window.innerWidth / 2, y: window.innerHeight / 2
+      }
+      let sc = screen_center
+
+      if (card_rect.left < sc.x && card_rect.right > sc.x 
+      && card_rect.top < sc.y && card_rect.bottom > sc.y) {
+        card.attr ("view", "selected")
+        card.selected ()
+
+        if (!pass && this.viewed_card != card) 
+          this.viewed_card.attr ("view", "all-cards"),
+          this.viewed_card.selected ();
+
+        this.viewed_card = card
+
+      }
+    }
+    clearTimeout (this.scroll_timeout)
   }
   render () {   
     
@@ -156,24 +206,31 @@ class CardDisplayer extends HtmlComponent {
     }
     ul {
       position: absolute;
-      left: 50%; top: 43%;
-      transform: translate(-50%, -50%);
-
-
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%) skew(-4deg, -4deg);
       display: flex; overflow-x: scroll;
       gap: 7rem;
       justify-content: space-between;
       align-items: center; margin: 0px; padding: 0rem 9rem;
-      transition: width .5s ease-out, opacity .4s ease-out, height .4s ease-out, border-radius .4s ease-in, background 3s ease-in;
+      backdrop-filter: blur(4px);
+      background: linear-gradient(45deg, var(--gray-0) 15%, transparent, var(--gray-0) 85%);  
+      transition: 
+        width .5s ease-out, 
+        opacity .4s ease-out, 
+        height .4s ease-out, 
+        border-radius .4s ease-in, 
+        background 3s ease-in,
+        filter .2s ease-in;
     }
     ul.all-cards {
-      width: 90%; height: 55rem;
+      width: 100%; height: 700px;
     }
     ul.selected {
+      transform: translate(-50%, -50%) skew(-4deg, 0deg);
       overflow-x: hidden;
       position: absolute;
       border-radius: 15px;
-      padding: 5rem 9rem; background: var(--card-tint);     
+      padding: 5rem 9rem;    
     } 
     @keyframes selected-list-view {
       to {
@@ -205,9 +262,11 @@ class CardDisplayer extends HtmlComponent {
       </style>
       <ul></ul>
     `
-
+    
     this.addEventListener("wheel", function (e) {
-      this.list.scrollLeft += e.deltaY;
+      this.list.scrollLeft += e.deltaY * .5;
+      this.wheel_scrolled_time = Date.now ()
+      this.scroll_timeout = setTimeout (this.updateViewedCard.bind (this), this.update_viewed_delay)
     });
   }
 }

@@ -4,6 +4,7 @@ class MyApp extends HtmlComponent {
     super ({name:"my-app"})
     this.card_data = undefined
     this.selected_cards = undefined
+    this.current_deck = undefined
     this.displayer = undefined
     this.signaler = new Signaler ("my-app")
   }
@@ -20,7 +21,7 @@ class MyApp extends HtmlComponent {
   }
   signals () {
     let $cards, len, data, card_data = this.card_data
-    let card_test_array = [...card_data, ...card_data]
+    let card_test_array = [...card_data, ...card_data, ...card_data]
 
     this.onSignal ("new-cards", view=> {
 
@@ -56,6 +57,18 @@ class MyApp extends HtmlComponent {
 
     })
 
+    this.onSignal ("add-blur-to-card-displayer", ()=> {
+      this.sendSignal ("add-foreground-blur", null, "card-displayer")
+    })
+
+    this.onSignal ("remove-blur-from-card-displayer", ()=> {
+      this.sendSignal ("remove-foreground-blur", null, "card-displayer")
+    })
+
+    this.onSignal ("check-viewed-card", card_a=> {
+      let card_b = this.sendSignal ("get-viewed-card", null, "card-displayer")
+      return card_a == card_b
+    })
     // this.onSignal ("display-selected-cards", cards=> {
     //   this.displayer.cards = [cards, "selected"]
     // })

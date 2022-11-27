@@ -18,6 +18,34 @@
   transition: left .2s ease-in, top .2s ease-out;
 }
 
-.card-element:hover .flash-container::before {
-  top: 100%; opacity: 1;
+.animated-border::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  box-shadow: 0 0 17px 3px #ffff01,0 0 4px 2px #ffff01;
+  z-index: -1;
+  animation-name: yellow-shadow;
+  animation-timing-function: ease;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  border-radius: 5px;
+}
+
+.animated-border::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 50%;
+  height: 50%;
+  box-shadow: 0 0 17px 3px #0ff,0 0 4px 2px #0ff;
+  z-index: -1;
+  animation-name: cyan-shadow;
+  animation-timing-function: ease;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  border-radius: 5px;
 }

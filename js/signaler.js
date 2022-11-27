@@ -12,8 +12,9 @@ class Signaler {
     this.components [comp_name] = comp
 
     comp.sendSignal = (signal_name, data, to)=> {
-      data = this._sender.signal (to || this.app_name, signal_name, data)
-      comp.incomingSignal (signal_name, data)
+      let rsp = this._sender.signal (to || this.app_name, signal_name, data)
+      let pass = comp.incomingSignal (signal_name, rsp)
+      if (pass === null) return rsp
     }
     comp.onSignal   = (signal_name, cb)=> {
       return this._reciever.event (comp.name, signal_name, cb)
@@ -21,6 +22,8 @@ class Signaler {
     comp.incomingSignal = (signal_name, data)=> {
       if (this._reciever.hasEvent (comp.name, signal_name))
         return this._reciever.signal (comp.name, signal_name, data)
+      else
+        return null
     }
     comp.onSignal ("app-loaded", ()=> {})
     
