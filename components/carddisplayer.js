@@ -75,9 +75,9 @@ class CardDisplayer extends HtmlComponent {
         setTimeout (()=> {
 
           this.toggleListView ()
-          this.addCards (cards)
+          setTimeout (()=> this.addCards (cards), 250)
         
-        }, 600)
+        }, 250)
   
       })
       else 

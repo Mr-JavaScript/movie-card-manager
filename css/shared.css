@@ -7,7 +7,7 @@
   --gray-3: rgb(100 100 100);
   --gray-4: rgb(50 50 50);
   --card-displayer-background: linear-gradient(to bottom right, var(--gray-1) 0%, var(--gray-2) 25%, var(--gray-2) 75%, var(--gray-1) 100%);
-  --card-tint: linear-gradient(to bottom right, rgb(25 25 25 / .7) 0%, rgb(25 25 25 / .1) 10%, rgb(25 25 25 / 0) 50%, rgb(25 25 25 / .1) 80%, rgb(25 25 25 / .7) 100%);
+  --card-tint: linear-gradient(to bottom right, rgb(25 25 25 / .1) 0%, rgb(25 25 25 / 0) 10%, rgb(25 25 25 / 0) 50%, rgb(100 100 100 / 0) 80%, rgb(25 25 25 / 0) 100%);
 }
 
 * {
@@ -24,57 +24,19 @@ body {
   overflow-x: hidden;
 }
 
-.flex {
-  display: flex;
-}
-
-.grid-center {
-  display: grid;
-  place-items: center;
-}
-
-.flex-column {
-  display: flex; flex-direction: column;
-}
-
-/* width */
 ::-webkit-scrollbar {
-  width: 1px;
-  border-radius: 15px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  height: 0.1rem;
-  border-radius: 15px;
-  background: var(--gray-0);
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  height: 0.1rem;
-  border-radius: 15px;
-  background: var(--gray-0);
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: var(--gray-2);
-}
-
-ul.hide-track::-webkit-scrollbar {
   width: .5em;
   height: 0px;
   scale: .5;
   background-color: rgb(0 0 0 / 0);
 }
 
-ul.hide-track::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   box-shadow: 0 0 6px 1px rgb(15 15 15 / .5);
   opacity: .7;
 }
 
-ul.hide-track::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background-color: var(--gray-1);
   outline: none;  border-radius: 15px;
   opacity: .7;

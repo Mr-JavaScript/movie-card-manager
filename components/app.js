@@ -81,9 +81,9 @@ class MyApp extends HtmlComponent {
         :host {
           position: absolute;
           width: 100%; height: 100%;
-          background: linear-gradient(-45deg, var(--gray-3), var(--gray-2), var(--gray-1), var(--gray-2), var(--gray-3));
+          background: linear-gradient(-45deg, #2e2e2e 38%, #39393b, #2e2e2e 68%);
           background-size: 400% 400%;
-          animation: gradient 15s ease infinite;
+          animation: gradient 10s ease infinite;
         }
 
         @keyframes gradient {

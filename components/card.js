@@ -49,39 +49,26 @@ class CardElement extends HtmlComponent {
         opacity: .5; transform: scale(1);
       }
     }
-    @keyframes move-bg-gradient {
+    @keyframes animated-box-shadow {
       0% {
         box-shadow: 4.5px 4.5px 5px 0px var(--gray-3);
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
       }
       100% {
         box-shadow: 4.5px 4.5px 10px 2.5px var(--gray-3);
-        background-position: 0% 50%;
       }
-    }
-    @keyframes card-bg-pulse {
-      0% { 
-        box-shadow: 4.5px 4.5px 5px 1.5px var(--gray-0);
-        background: radial-gradient(#480032, #005792, #FC92E3, #F2F4C3); }
-      25% { background: radial-gradient(#F2F4C3, #480032, #005792, #FC92E3, ); }
-      50% { background: radial-gradient(#FC92E3, #F2F4C3, #480032, #005792 ); }
-      100% { 
-        box-shadow: 4.5px 4.5px 5px 7.5px var(--gray-0);
-        background: radial-gradient(#005792, #FC92E3, #F2F4C3, #480032 ); }
-    }
-    `
+    }`
   }
   onHoverCSS () {
     return /* css */`
+    :host(:hover), :host(.selected){
+      transform: scale(1.1) skew(0deg, 0deg);
+    }
     .card-element.selected, .card-element:hover {
-      box-shadow: 0px 4.5px 5px .5px var(--gray-2);
-      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      backface-visibility: hidden;
+      box-shadow: var(--box-shadow-light);
+      background: var(--card-bg-gradient);
     }
     :host(.selected) .card-element {
-      animation: move-bg-gradient 2s 200ms ease-in infinite alternate;
     }
     :host(.selected) .poster, :host(:hover) .poster {
       margin: auto; width: 98%; height: 98%;
@@ -120,24 +107,30 @@ class CardElement extends HtmlComponent {
       position: static;
       padding: 1rem 1rem;
       opacity: 1;
-      background-color: var(--gray-0);
+      background-color: rgb(15 15 15 / .8);
+      box-shadow: var(--box-shadow-black);
       width: fit-content;
       margin-left: auto;
-      transform: translate(1rem, 1px);
+      transform: translate(1rem, 5px);
+      backdrop-filter: blur(4px);
       border-top-left-radius: 15px;
       border-top-right-radius: 15px;
+      text-shadow: var(--neon-text);
     }
-    :host(.selected) .ability-name p, :host(:hover) .ability-name p {
-      opacity: .5;
+    :host(.selected) .ability-name p, :host(:hover) .ability-name p, :host(.selected) .ability p, :host(:hover) .ability p {
+      opacity: 1; font-weight: bold;
     }
     :host(.selected) .ability, :host(:hover) .ability {
-      box-shadow: 0px 4.5px 5px 0px var(--gray-0);
+      box-shadow: var(--box-shadow-black);
       opacity: 1; width: 110%;
       padding: 1rem 1rem; display: block;
-      background-color: rgb(15 15 15);
+      background-color: rgb(15 15 15 / .8);
+      backdrop-filter: blur(4px);
     }
     :host(.selected) .ability-type, :host(:hover) .ability-type {
-      width: 40%;
+      width: 40%; font-weight: bold;
+      background-color: rgb(15 15 15 / .8);
+      box-shadow: var(--box-shadow-black);
     }
     :host(.selected) .flash-container, :host(:hover) .flash-container {
       opacity: 1;
@@ -148,85 +141,13 @@ class CardElement extends HtmlComponent {
     
   }
   borderCss () {
-    return /*css*/`
-    :host(:hover), :host(.selected){
-      transform: scale(1.1) skew(-4deg, -4deg);
-      box-shadow: none;
-    }
-    :host(.selected)::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 5%;
-      height: 5%;
-      box-shadow: 0 0 17px 2.5px #23d5ab;
-      opacity: .75;
-      z-index: -1;
-      animation: yellow-shadow 3s ease-out infinite;
-    }
+    return /*css*/``
 
-    :host(.selected)::after {
-      content: '';
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      width: 5%;
-      height: 5%;
-      box-shadow: 0 0 17px 2.5px #ee7752;
-      opacity: .75;
-      z-index: -2;
-      animation: cyan-shadow 3s ease-out infinite;
-    }
-    @keyframes yellow-shadow {
-      0% {
-        top: 0;
-        left: 0;
-      }
-      25% {
-        top: 95%;
-        left: 0;
-      }
-      50% {
-        top: 95%;
-        left: 95%;
-      }
-      75% {
-        top: 0;
-        left: 95%;
-      }
-      100% {
-        top: 0;
-        left: 0;
-      }
-    }
-
-  @keyframes cyan-shadow {
-    0% {
-      right: 0;
-      bottom: 0;
-    }
-    25% {
-      right: 0;
-      bottom: 95%;
-    }
-    50% {
-      right: 95%;
-      bottom: 95%;
-    }
-    75% {
-      right: 95%;
-      bottom: 0;
-    }
-    100% {
-      right: 0;
-      bottom: 0;
-    }
-  }`
   }
   selected (operation = "add") {
     if (this.classList.contains ("selected") && this.attr ("view") == "selected") return
     this.classList.toggle ("selected")
+    this.classList.toggle ("outline-tracers")
     this.query (".card-element").classList.toggle ("selected")
   }
   render () {
@@ -235,13 +156,18 @@ class CardElement extends HtmlComponent {
 
     let style = /*css*/`
     :host {
-      min-width: 260px; height: 540px; transform: scale(1) skew(-4deg, -2deg);
+      min-width: 260px; height: 540px; transform: scale(1) skew(-2deg, 0deg);
       max-width: 260px; position: relative;
       transition: transform .1s ease-in, opacity .4s ease-out;
+      --box-shadow-light: 4.5px 4.5px 5px 0px var(--gray-3);
+      --box-shadow-black: 4.5px 4.5px 2.5px 0px var(--gray-0);
+      --neon-text: 0 0 0.1em #fff, 0 0 0.2em #fff, 0 0 0.3em #fff, 0 0 0.2em #ee7752, 0 0 0.4em #23d5ab, 0 0 0.6em #23d5ab, 0 0 .8em #23d5ab, 0 0 1.2em #23d5ab;
+      --card-bg-gradient: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      --ability-name-bg-gradient: linear-gradient(45deg, rgb(231 60 126 / .25), rgb(238 119 82 / .5), rgb(35 213 171 / .5), rgb(35 166 213 / .25));
     }
     :host(.hide-card) {
       transition: transform .4s ease-in, opacity .4s ease-out;
-      opacity: 0; transform: translateX(-400px) scale(.6) skew(-4deg, -2deg);
+      opacity: 0; transform: translateX(-400px) scale(.6) skew(-2deg, 0deg);
     }
     .card-element {
       height: 99%;
@@ -249,7 +175,7 @@ class CardElement extends HtmlComponent {
       background-color: var(--gray-0);
       background-size: 520px 1080px;
       transition: transform .1s ease-in, box-shadow .2s ease-out, opacity .2s ease-out, background .2s ease-out;
-      box-shadow: 4.5px 4.5px 5px .5px var(--gray-2);
+      box-shadow: 3.5px 3.5px 5px .5px var(--gray-2);
       border: 4px solid var(--gray-0);
       border-style: groove solid;
       opacity: 0;
@@ -264,6 +190,7 @@ class CardElement extends HtmlComponent {
       background-position-x: 50%;
       left: 50%; top: 50%; transform: translate(-50%,-50%);
       transition: width .2s ease-in, height .2s ease-in;
+      backdrop-filter: blur(4px);
       z-index: -1;
     }
     .times-selected {
@@ -294,7 +221,8 @@ class CardElement extends HtmlComponent {
     .quote {
       font-size: 1.5em;
       padding: 1rem; width: 110%;
-      background-color: var(--gray-0);
+      background-color: rgb(15 15 15 / 1);
+      backdrop-filter: blur(4px);
       transition: opacity .2s ease-out, height .3s ease-in;
     }
     .ability {
@@ -309,7 +237,8 @@ class CardElement extends HtmlComponent {
       position: absolute;
       width: 0px;
       right: 0px; top: 1.3rem;
-      background-color: var(--gray-0);
+      background-color: rgb(15 15 15);
+      backdrop-filter: blur(4px);
       transition: width .3s ease-out, opacity .3s ease-out;
       overflow: hidden;
       border-bottom-left-radius: 15px;
@@ -337,7 +266,6 @@ class CardElement extends HtmlComponent {
       position: absolute;
       width: 200%; height: 200%;
       top: 0px; left: 0px;
-      background: var(--card-tint);
       margin: 0px;
       transition: transform .3s ease-out;
     }
@@ -384,8 +312,11 @@ class CardElement extends HtmlComponent {
     `
 
     this.shadowRoot.innerHTML = /* html */`
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monoton&effect=neon">
       <style>
+        
         @import "../css/hero.css";
+        @import "../css/utils.css";
         
         ${style}
 

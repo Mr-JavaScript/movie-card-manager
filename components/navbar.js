@@ -206,16 +206,26 @@ class NavBar extends HtmlComponent {
     `
 
     let submit_form_style = /*css*/`
+      @keyframes animated-box-shadow {
+        0% {
+          box-shadow: 4.5px 4.5px 5px 0px var(--gray-2);
+        }
+        100% {
+          box-shadow: 4.5px 4.5px 10px 2.5px var(--gray-2);
+        }
+      }
       form {
-        top: 9.5rem; right: 1rem; overflow: hidden;
+        top: 10.5rem; right: 3rem;
         background-color: var(--gray-0);
         border-radius: 0px 15px 0px 15px;
         position: absolute;
         width: 540px; height: 420px;
         display: flex;
-        box-shadow: 0px 4px 10px 1.5px var(--gray-1);
+        box-shadow: 4.5px 4.5px 10px 1.5px var(--gray-2);
         transition: opacity .2s ease-out, transform .15s ease-in;
+        transform: skew(-6deg, -4deg);
         border: 3px solid black;
+        animation: animated-box-shadow 2s 200ms ease-in infinite alternate;
       }
       form .nav {
         width: 30%;
@@ -322,7 +332,8 @@ class NavBar extends HtmlComponent {
       }
       form.hidden {
         opacity: 1;
-        transform: translateX(100%);
+        transform: translateX(102%) skew(-6deg, -4deg);
+        animation: none;
       }
       form .url {
         font-size: .75em;
@@ -332,6 +343,7 @@ class NavBar extends HtmlComponent {
     this.shadowRoot.innerHTML = /* html */`
 
       <style>
+        @import "../css/utils.css";
         ${main_style}
         ${submit_form_style}
       </style>
@@ -510,15 +522,18 @@ class NavBar extends HtmlComponent {
     form.onmouseenter = ()=> {
       form.enterTime = Date.now ()
       form.classList.remove ("hidden")
+      form.classList.add ("outline-tracers")
       this.sendSignal ("add-blur-to-card-displayer")
     }
     form.onmouseleave = ()=> {
 
       setTimeout (()=> {
         if (Date.now () - form.enterTime >= 1000) 
-          this.sendSignal ("remove-blur-from-card-displayer"),  
-          form.classList.add ("hidden")
-      }, 1500)
+          this.sendSignal ("remove-blur-from-card-displayer"),
+          form.classList.add ("hidden"),
+          form.classList.remove ("outline-tracers")
+      }, 1000)
+
     }
   }
 }
